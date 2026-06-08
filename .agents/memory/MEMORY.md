@@ -1,0 +1,6 @@
+- [Multi-tech & push features](multi-tech-push.md) — pendingTechnicianIds stored as JSON text in Sheets; parsePendingIds(); push subscriptions stored as JSON array in Staff.push_subscriptions column
+- [Google Sheets migration](sheets-migration.md) — backend fully migrated from PostgreSQL/Drizzle to Google Sheets; no Drizzle/pg anywhere in api-server
+- [Projects module](projects-module.md) — Projects page wired into real admin panel; Google Sheets sync to sheet ID 1i0X8Ypvsmn3fODeBdwsU620W8Xr3axnqO4ZWg1remXE, tab "Projects".
+- [Quotation PDF workflow](quotation-workflow.md) — Full token-based approval chain; stage 0 unlocks only on CLIENT_APPROVED; Drive upload via GOOGLE_SERVICE_ACCOUNT_JSON with Drive scope.
+- [Express params type cast](express-params-cast.md) — req.params values typed string|string[] in Express; always cast with String(req.params.x) before passing to db calls.
+- [Sheets tab auto-creation](sheets-tab-autocreate.md) — appendRow fails with 400 if tab doesn't exist; ensureHeaders must call ensureTabExists (batchUpdate addSheet) before writing headers.

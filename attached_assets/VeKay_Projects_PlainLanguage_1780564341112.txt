@@ -1,0 +1,318 @@
+VEKAY SOLAR — PROJECTS MODULE
+A Complete Plain-Language Explanation
+=====================================
+
+This document explains, in simple words, exactly what the new "Projects"
+section is, how it should sit inside your website's admin panel, how it
+connects to your Google Sheet, and how it should behave. There are no codes
+or scripts here — just a full description of how everything works and looks,
+so anyone reading it understands the whole setup.
+
+
+-------------------------------------------------------------------------------
+1. WHAT THIS IS
+-------------------------------------------------------------------------------
+
+Right now your admin panel already has a "Complaints" section where you can
+see every customer complaint, open it, and manage it. We are adding a brand
+new section next to it called "Projects".
+
+The Projects section is for tracking your solar installation jobs from start
+to finish. Each project is one customer's installation, and it moves through
+eleven steps — from the day materials are delivered, all the way to the day
+the warranty is handed over.
+
+It looks and feels exactly like the Complaints section (same menu style, same
+table layout, same colours and buttons), but it works differently inside.
+Complaints track problems that need fixing. Projects track an installation
+moving forward through its stages.
+
+
+-------------------------------------------------------------------------------
+2. WHERE IT SITS IN THE SYSTEM
+-------------------------------------------------------------------------------
+
+In the left-hand menu of the admin panel, there is currently:
+Dashboard, Complaints, Customers, Technicians, Reports.
+
+We add one new item — "Projects" — placed right after Complaints. It has a
+small sun icon so it stands out as the solar installation tracker. When you
+click it, the Projects page opens in the main area, just like clicking
+Complaints opens the complaints page.
+
+
+-------------------------------------------------------------------------------
+3. THE CONNECTION TO YOUR GOOGLE SHEET (THE MOST IMPORTANT PART)
+-------------------------------------------------------------------------------
+
+Your project data lives in a Google Sheet in your Drive. We connect that
+sheet to the system so the two always show the same information.
+
+Here is how the connection behaves:
+
+- The system is connected to ONE specific tab inside your Google Spreadsheet.
+  We name that tab "Projects". (Your complaints already use a different tab,
+  so they stay separate and don't interfere with each other.)
+
+- There is NO "sync" button anywhere. You should never have to press anything
+  to update the sheet. The moment you change anything in the admin panel —
+  the second you save it — it is written into the Google Sheet automatically.
+  If you change a stage to "Done" at 2:32 in the afternoon, that change is in
+  your sheet within a moment, already stamped with the time and date.
+
+- Everything that happens is saved continuously, time after time, with a
+  timestamp and date. Nothing is ever lost or left un-saved. Whenever someone
+  updates a project, that update appears in the sheet immediately.
+
+- The sheet is the permanent record. So even if you open the Google Sheet
+  directly on your phone, you will see the latest version of everything,
+  always up to date with what's in the admin panel.
+
+
+-------------------------------------------------------------------------------
+4. THE COLUMNS IN THE GOOGLE SHEET
+-------------------------------------------------------------------------------
+
+The sheet is laid out cleanly, exactly the same neat style as your Complaints
+sheet — a bold coloured header row at the top, frozen so it stays visible
+when you scroll, and the first few identifying columns frozen so you always
+know which customer each row belongs to.
+
+The columns, left to right, are:
+
+  Customer identification (the first part — who the project belongs to):
+   1.  SL No                — the serial number of the project
+   2.  FL No                — the file number
+   3.  Customer Name        — the customer's full name
+   4.  Place                — their location / area
+   5.  Capacity (KW)        — the system size, e.g. "5 KW DCR", "3 KW"
+   6.  Phone                — contact number
+   7.  Consumer No (KSEB)   — their KSEB consumer number
+   8.  Total Amount         — the total project value in rupees
+
+  The eleven installation stages (the project's progress through the flow):
+   9.  Stage 1  — Material Delivery
+   10. Stage 2  — Advance 40%
+   11. Stage 3  — Welding
+   12. Stage 4  — Feasibility
+   13. Stage 5  — Wiring
+   14. Stage 6  — Commissioning
+   15. Stage 7  — Paper Submission
+   16. Stage 8  — 2nd Payment 50%
+   17. Stage 9  — Deposit Paid
+   18. Stage 10 — Account Clear 10%
+   19. Stage 11 — Warranty Given
+
+  The record-keeping columns (the history):
+   20. Activity Log         — the full timestamped history of every change
+   21. Last Updated         — when the row was last touched, in IST
+   22. Registered On        — when the project was first created, in IST
+
+The stage columns are colour-coded automatically inside the sheet so you can
+read the whole picture at a glance: green when a stage is done, soft yellow
+when it's pending, light purple when it's a loan, and light blue when payment
+is received. Empty stages stay blank.
+
+
+-------------------------------------------------------------------------------
+5. WHAT THE PROJECTS PAGE LOOKS LIKE (THE LIST)
+-------------------------------------------------------------------------------
+
+When you open Projects, you see a clean table — the same look as the
+Complaints list. Each row is one project. Reading across a row you see:
+
+  - FL number
+  - Customer name
+  - Place
+  - Capacity (a small badge showing the KW)
+  - A progress bar with a percentage, so you instantly know how far along
+    the project is (for example 60% means roughly six or seven stages done)
+  - Then eleven small status markers, one for each stage
+
+Each of the eleven stage markers is a small coloured dot or tick:
+  - A green tick means that stage is finished
+  - A purple marker means a payment-type entry (loan, cash, received)
+  - A blue marker means it's actively in progress (a technician is on it)
+  - A yellow hourglass means pending
+  - A faint dash means not started yet
+
+If you hover your mouse over any stage marker, a little tooltip pops up
+showing the actual value — for example the date it was done, or "PENDING",
+or the technician's name.
+
+At the top of the page there are filters, just like complaints has filters:
+  - A progress filter: show all, or only nearly-complete projects, or only
+    in-progress ones, or only new/just-started ones
+  - A capacity filter: show all, or only 3 KW, or only 5 KW, or only the
+    large systems (8 KW and above)
+
+There is also a "New Project" button in the top right corner.
+
+The list is sorted sensibly — projects that are nearly complete, in progress,
+and brand new are grouped so the ones needing attention are easy to find.
+
+
+-------------------------------------------------------------------------------
+6. OPENING A PROJECT (THE DETAIL AND EDIT VIEW)
+-------------------------------------------------------------------------------
+
+When you click any row, a panel slides in from the right side of the screen.
+This is where you see everything about that one project and where you make
+all your edits. It has four parts, from top to bottom:
+
+  PART A — Customer Details
+  -------------------------
+  All the customer's information laid out in neat boxes you can edit directly:
+  full name, place, phone, consumer number, capacity, FL number, SL number,
+  and total amount. Just type into any box to change it.
+
+  PART B — Installation Flow (the eleven stages)
+  ----------------------------------------------
+  This is the heart of it. All eleven stages are listed one under the other,
+  each numbered 1 to 11, each with its own little coloured dot showing its
+  status, its name, and its icon. For each stage you can:
+
+    - Pick a status from a simple dropdown: Not started, Done, Pending,
+      Received, Loan, Cash, or Submitted
+    - Or type a custom value or a date directly (for example "29/May/26"
+      or a technician's name)
+    - And below each stage there is a small remark box where you can add a
+      short note specific to that stage — for example "KSEB connection
+      pending" or "transformer upgrade needed"
+
+  The whole stage row changes colour to match its status, so the panel itself
+  is easy to read at a glance.
+
+  PART C — General Remark / Follow-up Note
+  ----------------------------------------
+  A larger note box for any general comment about the project that isn't tied
+  to one particular stage. Whatever you write here gets saved into the history
+  with your name and the time.
+
+  PART D — Activity Log (the history)
+  -----------------------------------
+  At the bottom is a collapsible section showing the complete history of the
+  project. It stays small and tidy when closed, but when you open it you see
+  every single change ever made, newest at the top, each line reading
+  something like:
+
+      28 May 26, 2:32 PM · Admin — Material Delivery: "" → "DONE"
+      28 May 26, 2:32 PM · Admin — Note: Transformer upgrade needed
+      29 May 26, 10:00 AM · Admin — Advance 40%: → LOAN
+
+  This log is never edited by hand — the system writes it for you. It is your
+  permanent, trustworthy record of who did what and when.
+
+  Saving:
+  When you've made your changes, you press "Save & Sync". The changes are
+  saved, the history is updated with a timestamp, and the Google Sheet is
+  updated instantly — all in one action. A small confirmation appears. There
+  is a gentle reminder at the bottom that every save goes straight to your
+  Google Sheet with no extra step.
+
+
+-------------------------------------------------------------------------------
+7. ADDING A NEW PROJECT
+-------------------------------------------------------------------------------
+
+Pressing the "New Project" button opens a small form. You fill in:
+
+  - Customer name (required)
+  - Place (required)
+  - Capacity in KW (required — pick from a list, or choose "custom" to type
+    something like "5 with 3 KW hybrid")
+  - FL number
+  - SL number
+  - Phone
+  - KSEB consumer number
+  - Total amount in rupees
+  - An optional first remark
+
+When you press "Create Project":
+  - The project is created
+  - It automatically gets the next serial number
+  - The history records "Project created" with the date, time, and your name
+  - A new row appears in the Google Sheet straight away
+  - The new project's detail panel opens so you can start filling in its stages
+
+The eleven stages all start empty (not started), and you fill them in over
+time as the installation progresses.
+
+
+-------------------------------------------------------------------------------
+8. EDITING AND FOLLOW-UP — HOW THE FLOW WORKS DAY TO DAY
+-------------------------------------------------------------------------------
+
+The whole point of this section is to make following up on each job simple and
+professional. Here's the everyday rhythm:
+
+  - A new enquiry comes in → you add a new project. It shows as "new" in the
+    list with an empty progress bar.
+
+  - Materials get delivered → you open the project, set Stage 1 to Done. The
+    progress bar moves up, the sheet updates, the history records it.
+
+  - Advance is collected → set Stage 2 to the payment type (Loan / Cash /
+    Received). Add a remark if needed, like "1 lakh paid, balance on loan".
+
+  - And so on through welding, feasibility, wiring, commissioning, paperwork,
+    second payment, deposit, account clearing, and finally warranty.
+
+  - At every step you can leave a remark, so the next person who opens it
+    knows exactly what's happening and what to follow up on.
+
+  - At any time you can glance at the list and instantly see which projects
+    are stuck, which are nearly done, and which haven't started — and act on
+    them.
+
+Every edit, every remark, every status change is saved the moment you make it,
+stamped with the date and time, visible both in the admin panel and in your
+Google Sheet.
+
+
+-------------------------------------------------------------------------------
+9. WHAT NEEDS TO HAPPEN TO SET IT UP (IN PLAIN WORDS)
+-------------------------------------------------------------------------------
+
+For your developer, the setup is small and clean. In plain language, these are
+the things that need doing — no need to rebuild anything that already exists:
+
+  1. Add a new storage table in the database to hold projects (a one-time
+     setup that the system can create automatically).
+
+  2. Add the new Projects page into the admin panel — the page already
+     follows the same design as the Complaints page, so it fits right in.
+
+  3. Add the "Projects" item to the left-hand menu, between Complaints and
+     Customers, with the sun icon.
+
+  4. Connect it to the Google Sheet — point it at a new tab named "Projects"
+     inside the spreadsheet that's already connected to the system, and share
+     that sheet with the same service account already in use. No new accounts
+     or new logins are needed.
+
+  5. That's it. Once those are in place, adding, editing, and following up on
+     projects all work, and everything writes to the Google Sheet instantly.
+
+
+-------------------------------------------------------------------------------
+10. THE SHORT SUMMARY
+-------------------------------------------------------------------------------
+
+  - A new "Projects" section in the admin panel, sitting beside Complaints.
+  - It tracks each solar installation through 11 clear stages.
+  - It looks exactly like the Complaints section but works as a forward-moving
+    installation tracker instead of a complaint handler.
+  - It is connected live to a "Projects" tab in your Google Sheet.
+  - There is no sync button — every change saves and updates the sheet
+    instantly, with the date and time recorded.
+  - Every project keeps a full, timestamped history of who changed what and
+    when, kept small and tidy but fully viewable when opened.
+  - Every stage and the project overall can carry remarks, so follow-up is
+    easy and professional.
+  - You can add new projects, edit any detail, filter the list, and see each
+    project's progress at a glance.
+
+The result is one clean, professional place to run your whole installation
+pipeline — easy to handle, easy to understand, and always in sync with your
+Google Sheet.

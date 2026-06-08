@@ -1,0 +1,23 @@
+{
+  "name": "@workspace/scripts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "hello": "tsx ./src/hello.ts",
+    "export-db": "tsx ./src/export-db.ts",
+    "seed-sheets": "tsx ./src/seed-sheets.ts",
+    "migrate-neon-to-sheets": "tsx ./src/migrate-neon-to-sheets.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@types/pg": "^8.20.0",
+    "@workspace/db": "workspace:*",
+    "googleapis": "^172.0.0",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsx": "catalog:"
+  }
+}

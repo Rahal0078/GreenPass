@@ -1,0 +1,1058 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: VeKay Solar CRM API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: complaints
+    description: Complaint management
+  - name: technicians
+    description: Technician management
+  - name: admins
+    description: Admin management
+  - name: media
+    description: Media uploads
+  - name: places
+    description: Kerala place search
+  - name: reports
+    description: Reports and analytics
+  - name: push
+    description: Web push notifications
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # ── Auth ─────────────────────────────────────────────────────────────────
+  /auth/admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admins]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/technician/login:
+    post:
+      operationId: technicianLogin
+      tags: [technicians]
+      summary: Technician login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TechnicianAuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [admins]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [admins]
+      summary: Get current session user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionUser"
+        "401":
+          description: Not authenticated
+
+  # ── Places ───────────────────────────────────────────────────────────────
+  /places/search:
+    get:
+      operationId: searchPlaces
+      tags: [places]
+      summary: Search Kerala places
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Matching places
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Place"
+
+  # ── Complaints ───────────────────────────────────────────────────────────
+  /complaints:
+    get:
+      operationId: listComplaints
+      tags: [complaints]
+      summary: List all complaints (admin)
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: urgency
+          in: query
+          schema:
+            type: string
+        - name: technicianId
+          in: query
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of complaints
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Complaint"
+
+    post:
+      operationId: createComplaint
+      tags: [complaints]
+      summary: Submit a new complaint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComplaintInput"
+      responses:
+        "201":
+          description: Complaint created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+
+  /complaints/{id}:
+    get:
+      operationId: getComplaint
+      tags: [complaints]
+      summary: Get a single complaint
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Complaint detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+        "404":
+          description: Not found
+
+    patch:
+      operationId: updateComplaint
+      tags: [complaints]
+      summary: Update complaint (admin — urgency, status, assign technician)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComplaintUpdate"
+      responses:
+        "200":
+          description: Updated complaint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+
+    delete:
+      operationId: deleteComplaint
+      tags: [complaints]
+      summary: Delete a complaint (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /complaints/{id}/accept:
+    post:
+      operationId: acceptComplaint
+      tags: [complaints]
+      summary: Technician accepts a pending assignment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+        "404":
+          description: Not found
+
+  /complaints/{id}/complete:
+    post:
+      operationId: completeComplaint
+      tags: [complaints]
+      summary: Technician marks complaint as completed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComplaintCompleteInput"
+      responses:
+        "200":
+          description: Completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+
+  /complaints/ticket/{ticketId}:
+    get:
+      operationId: getComplaintByTicket
+      tags: [complaints]
+      summary: Look up complaint by ticket ID (public)
+      parameters:
+        - name: ticketId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Complaint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Complaint"
+        "404":
+          description: Not found
+
+  # ── Technicians ──────────────────────────────────────────────────────────
+  /technicians:
+    get:
+      operationId: listTechnicians
+      tags: [technicians]
+      summary: List all technicians
+      responses:
+        "200":
+          description: List
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Technician"
+
+    post:
+      operationId: createTechnician
+      tags: [technicians]
+      summary: Create a technician (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TechnicianInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Technician"
+
+  /technicians/{id}:
+    get:
+      operationId: getTechnician
+      tags: [technicians]
+      summary: Get technician details with assigned complaints
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Technician with complaints
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TechnicianDetail"
+
+    patch:
+      operationId: updateTechnician
+      tags: [technicians]
+      summary: Update technician
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TechnicianUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Technician"
+
+    delete:
+      operationId: deleteTechnician
+      tags: [technicians]
+      summary: Delete a technician (admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+
+  /technicians/{id}/map:
+    get:
+      operationId: getTechnicianMap
+      tags: [technicians]
+      summary: Get technician assigned complaints for map view
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Map data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MapPin"
+
+  # ── Dashboard / Summary ──────────────────────────────────────────────────
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [reports]
+      summary: Admin dashboard summary counts
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/activity:
+    get:
+      operationId: getRecentActivity
+      tags: [reports]
+      summary: Recent complaint activity feed
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Activity list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+
+  /dashboard/urgency-breakdown:
+    get:
+      operationId: getUrgencyBreakdown
+      tags: [reports]
+      summary: Count of complaints per urgency level
+      responses:
+        "200":
+          description: Breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UrgencyCount"
+
+  /dashboard/technician-workload:
+    get:
+      operationId: getTechnicianWorkload
+      tags: [reports]
+      summary: Complaints per technician
+      responses:
+        "200":
+          description: Workload
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TechnicianWorkload"
+
+  # ── Reports ──────────────────────────────────────────────────────────────
+  /reports/daily:
+    get:
+      operationId: getDailyReport
+      tags: [reports]
+      summary: Download daily report as JSON (triggers email too)
+      parameters:
+        - name: date
+          in: query
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: Daily report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DailyReport"
+
+  /reports/excel:
+    get:
+      operationId: downloadExcelReport
+      tags: [reports]
+      summary: Download full report as Excel file
+      responses:
+        "200":
+          description: Excel file URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ── Push Notifications ───────────────────────────────────────────────────
+  /push/vapid-key:
+    get:
+      operationId: getVapidPublicKey
+      tags: [push]
+      summary: Get VAPID public key for push subscription
+      responses:
+        "200":
+          description: VAPID public key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VapidKeyResponse"
+
+  /push/subscribe:
+    post:
+      operationId: subscribePush
+      tags: [push]
+      summary: Save a push subscription for the current technician
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PushSubscriptionInput"
+      responses:
+        "200":
+          description: Subscribed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /push/unsubscribe:
+    post:
+      operationId: unsubscribePush
+      tags: [push]
+      summary: Remove a push subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PushUnsubscribeInput"
+      responses:
+        "200":
+          description: Unsubscribed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ── Media ────────────────────────────────────────────────────────────────
+  /media/upload:
+    post:
+      operationId: uploadMedia
+      tags: [media]
+      summary: Upload complaint media (image/video)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MediaUploadInput"
+      responses:
+        "200":
+          description: Upload result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaUploadResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required: [message]
+
+    LoginInput:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    AdminAuthResponse:
+      type: object
+      required: [id, username, name, role]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+
+    TechnicianAuthResponse:
+      type: object
+      required: [id, username, name, role]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+
+    SessionUser:
+      type: object
+      required: [id, username, name, role]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+
+    Place:
+      type: object
+      required: [name, district, pincode, address]
+      properties:
+        name:
+          type: string
+        district:
+          type: string
+        pincode:
+          type: string
+        address:
+          type: string
+        lat:
+          type: ["number", "null"]
+        lng:
+          type: ["number", "null"]
+
+    Complaint:
+      type: object
+      required: [id, ticketId, customerName, customerPhone, customerEmail, placeName, district, pincode, address, complaintType, description, status, urgency, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        ticketId:
+          type: string
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        customerEmail:
+          type: string
+        ksebConsumerNumber:
+          type: ["string", "null"]
+        placeName:
+          type: string
+        district:
+          type: string
+        pincode:
+          type: string
+        address:
+          type: string
+        lat:
+          type: ["number", "null"]
+        lng:
+          type: ["number", "null"]
+        locationSource:
+          type: ["string", "null"]
+        complaintType:
+          type: string
+        description:
+          type: string
+        mediaUrls:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [open, in_progress, going, reached, on_hold, resolved, closed]
+        urgency:
+          type: string
+          enum: [low, medium, high, critical]
+        urgencyColor:
+          type: ["string", "null"]
+        technicianId:
+          type: ["integer", "null"]
+        technicianName:
+          type: ["string", "null"]
+        pendingTechnicianIds:
+          type: array
+          items:
+            type: integer
+        adminNotes:
+          type: ["string", "null"]
+        completionNotes:
+          type: ["string", "null"]
+        scheduledDate:
+          type: ["string", "null"]
+        completedAt:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    ComplaintInput:
+      type: object
+      required: [customerName, customerPhone, customerEmail, ksebConsumerNumber, placeName, district, pincode, address, complaintType, description]
+      properties:
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+          minLength: 10
+          maxLength: 13
+        customerEmail:
+          type: string
+        ksebConsumerNumber:
+          type: string
+          pattern: "^[0-9]{13}$"
+        placeName:
+          type: string
+        district:
+          type: string
+        pincode:
+          type: string
+        address:
+          type: string
+        lat:
+          type: ["number", "null"]
+        lng:
+          type: ["number", "null"]
+        locationSource:
+          type: ["string", "null"]
+        complaintType:
+          type: string
+        description:
+          type: string
+          minLength: 10
+          maxLength: 500
+        mediaUrls:
+          type: ["string", "null"]
+        scheduledDate:
+          type: ["string", "null"]
+
+    ComplaintUpdate:
+      type: object
+      properties:
+        urgency:
+          type: string
+          enum: [low, medium, high, critical]
+        urgencyColor:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [open, in_progress, going, reached, on_hold, resolved, closed]
+        technicianId:
+          type: ["integer", "null"]
+        pendingTechnicianIds:
+          type: array
+          items:
+            type: integer
+        adminNotes:
+          type: ["string", "null"]
+        scheduledDate:
+          type: ["string", "null"]
+
+    ComplaintCompleteInput:
+      type: object
+      required: [completionNotes]
+      properties:
+        completionNotes:
+          type: string
+
+    Technician:
+      type: object
+      required: [id, username, name, phone, area, isActive, createdAt]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        area:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+
+    TechnicianDetail:
+      type: object
+      required: [id, username, name, phone, area, isActive, createdAt, assignedComplaints]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        area:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+        assignedComplaints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Complaint"
+
+    TechnicianInput:
+      type: object
+      required: [username, password, name, phone, area]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        area:
+          type: string
+
+    TechnicianUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        area:
+          type: string
+        isActive:
+          type: boolean
+        password:
+          type: ["string", "null"]
+
+    MapPin:
+      type: object
+      required: [complaintId, ticketId, customerName, placeName, address, lat, lng, urgency, urgencyColor, status, complaintType, createdAt]
+      properties:
+        complaintId:
+          type: integer
+        ticketId:
+          type: string
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        placeName:
+          type: string
+        address:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        urgency:
+          type: string
+        urgencyColor:
+          type: string
+        status:
+          type: string
+        complaintType:
+          type: string
+        description:
+          type: string
+        scheduledDate:
+          type: ["string", "null"]
+        adminNotes:
+          type: ["string", "null"]
+        isPending:
+          type: boolean
+        createdAt:
+          type: string
+
+    DashboardSummary:
+      type: object
+      required: [totalComplaints, openComplaints, inProgress, resolved, critical, highUrgency, totalTechnicians, activeTechnicians]
+      properties:
+        totalComplaints:
+          type: integer
+        openComplaints:
+          type: integer
+        inProgress:
+          type: integer
+        resolved:
+          type: integer
+        closed:
+          type: integer
+        critical:
+          type: integer
+        highUrgency:
+          type: integer
+        totalTechnicians:
+          type: integer
+        activeTechnicians:
+          type: integer
+        todayComplaints:
+          type: integer
+
+    ActivityItem:
+      type: object
+      required: [id, ticketId, customerName, action, createdAt]
+      properties:
+        id:
+          type: integer
+        ticketId:
+          type: string
+        customerName:
+          type: string
+        placeName:
+          type: string
+        urgency:
+          type: string
+        urgencyColor:
+          type: ["string", "null"]
+        action:
+          type: string
+        createdAt:
+          type: string
+
+    UrgencyCount:
+      type: object
+      required: [urgency, urgencyColor, count]
+      properties:
+        urgency:
+          type: string
+        urgencyColor:
+          type: string
+        count:
+          type: integer
+
+    TechnicianWorkload:
+      type: object
+      required: [technicianId, technicianName, area, total, open, inProgress, resolved]
+      properties:
+        technicianId:
+          type: integer
+        technicianName:
+          type: string
+        area:
+          type: string
+        total:
+          type: integer
+        open:
+          type: integer
+        inProgress:
+          type: integer
+        resolved:
+          type: integer
+
+    DailyReport:
+      type: object
+      required: [date, totalComplaints, newComplaints, resolved, byUrgency, complaints]
+      properties:
+        date:
+          type: string
+        totalComplaints:
+          type: integer
+        newComplaints:
+          type: integer
+        resolved:
+          type: integer
+        byUrgency:
+          type: array
+          items:
+            $ref: "#/components/schemas/UrgencyCount"
+        complaints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Complaint"
+
+    VapidKeyResponse:
+      type: object
+      required: [publicKey]
+      properties:
+        publicKey:
+          type: string
+
+    PushSubscriptionInput:
+      type: object
+      required: [endpoint, p256dh, auth]
+      properties:
+        endpoint:
+          type: string
+        p256dh:
+          type: string
+        auth:
+          type: string
+
+    PushUnsubscribeInput:
+      type: object
+      required: [endpoint]
+      properties:
+        endpoint:
+          type: string
+
+    MediaUploadInput:
+      type: object
+      required: [filename, mimeType, data]
+      properties:
+        filename:
+          type: string
+        mimeType:
+          type: string
+        data:
+          type: string
+          description: base64 encoded file content
+
+    MediaUploadResponse:
+      type: object
+      required: [url, filename]
+      properties:
+        url:
+          type: string
+        filename:
+          type: string

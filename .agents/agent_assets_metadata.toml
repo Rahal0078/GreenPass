@@ -1,0 +1,56 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "MaVFxxRULbpC4LyYJZfSr"
+uri = "file://VeKay_Solar_CRM_Setup_Guide.md"
+type = "text"
+title = "VeKay Solar CRM — Setup & Handover Guide"
+
+[[outputs]]
+id = "MHkqpauN18pdTFOXfwetU"
+uri = "file://VeKay_Solar_CRM_Full_Documentation.md"
+type = "text"
+title = "VeKay Solar CRM — Full System Documentation"
+
+[[outputs]]
+id = "PHHvA2Pwb3eFyNaSZE-5k"
+uri = "file://VeKay_Solar_CRM_Source.zip"
+type = "unspecified"
+title = "VeKay Solar CRM — Full Source Code (ZIP)"
+
+[[outputs]]
+id = "d3XC9562q7vpg3syoRasl"
+uri = "file://VeKay_Solar_CRM_Full.zip"
+type = "unspecified"
+title = "VeKay Solar CRM — Full Source + Setup Guide"
+
+[[outputs]]
+id = "kta0F-MclV_psjvyTImTi"
+uri = "file://vekay-solar-crm-docs.zip"
+type = "unspecified"
+title = "VeKay Solar CRM — Full Documentation Package"
+
+[[outputs]]
+id = "uTGz9Em9MlxhemImPHssI"
+uri = "file://environment-variables.md"
+type = "text"
+title = "VeKay Solar CRM — Environment Variables"
+
+[[outputs]]
+id = "km0CDmyyMF1EAm1mlUF-b"
+uri = "file://migration-verification.md"
+type = "text"
+title = "Migration Verification Report"
+
+[[outputs]]
+id = "82tVaiAHmsOBbrZwhcjXK"
+uri = "file://project-report.md"
+type = "text"
+title = "VeKay Solar CRM — Full System Report"
+
+[[outputs]]
+id = "YTV9zb7LbhHqk1uHiMYQW"
+uri = "file://project-report-missing-details.md"
+type = "text"
+title = "VeKay Solar CRM — Missing Details Report"
