@@ -26,7 +26,10 @@ router.post("/auth/admin/login", async (req, res): Promise<void> => {
   req.session.username = admin.username;
 
   saveExcelBackup().catch(() => {});
-  res.json({ id: parseInt(admin.id), username: admin.username, name: admin.name, role: "admin" });
+  req.session.save((err) => {
+    if (err) { res.status(500).json({ error: "Session save failed" }); return; }
+    res.json({ id: parseInt(admin.id), username: admin.username, name: admin.name, role: "admin" });
+  });
 });
 
 router.post("/auth/technician/login", async (req, res): Promise<void> => {
@@ -52,7 +55,10 @@ router.post("/auth/technician/login", async (req, res): Promise<void> => {
   req.session.name = tech.name;
   req.session.username = tech.username;
 
-  res.json({ id: parseInt(tech.id), username: tech.username, name: tech.name, role: "technician" });
+  req.session.save((err) => {
+    if (err) { res.status(500).json({ error: "Session save failed" }); return; }
+    res.json({ id: parseInt(tech.id), username: tech.username, name: tech.name, role: "technician" });
+  });
 });
 
 router.post("/auth/login", async (req, res): Promise<void> => {
@@ -69,7 +75,10 @@ router.post("/auth/login", async (req, res): Promise<void> => {
     req.session.name = admin.name;
     req.session.username = admin.username;
     saveExcelBackup().catch(() => {});
-    res.json({ id: parseInt(admin.id), username: admin.username, name: admin.name, role: "admin" });
+    req.session.save((err) => {
+      if (err) { res.status(500).json({ error: "Session save failed" }); return; }
+      res.json({ id: parseInt(admin.id), username: admin.username, name: admin.name, role: "admin" });
+    });
     return;
   }
 
@@ -83,7 +92,10 @@ router.post("/auth/login", async (req, res): Promise<void> => {
     req.session.role = "technician";
     req.session.name = tech.name;
     req.session.username = tech.username;
-    res.json({ id: parseInt(tech.id), username: tech.username, name: tech.name, role: "technician" });
+    req.session.save((err) => {
+      if (err) { res.status(500).json({ error: "Session save failed" }); return; }
+      res.json({ id: parseInt(tech.id), username: tech.username, name: tech.name, role: "technician" });
+    });
     return;
   }
 
