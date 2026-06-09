@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { Download, CalendarIcon, Loader2 } from "lucide-react";
+import { API_BASE } from "@/lib/api-base";
 
 export default function Reports() {
   const [date, setDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
@@ -58,7 +59,7 @@ export default function Reports() {
               />
             </div>
             <Button
-              onClick={() => downloadFile("/api/reports/excel", `greenpass-${format(new Date(), 'yyyy-MM-dd')}.xlsx`, setIsDownloading)}
+              onClick={() => downloadFile(`${API_BASE}/api/reports/excel`, `greenpass-${format(new Date(), 'yyyy-MM-dd')}.xlsx`, setIsDownloading)}
               disabled={isDownloading}
               variant="outline"
             >
@@ -66,7 +67,7 @@ export default function Reports() {
               Export Excel
             </Button>
             <Button
-              onClick={() => downloadFile("/api/reports/excel/backup", `greenpass-backup.xlsx`, setIsBackupDownloading)}
+              onClick={() => downloadFile(`${API_BASE}/api/reports/excel/backup`, `greenpass-backup.xlsx`, setIsBackupDownloading)}
               disabled={isBackupDownloading}
               variant="secondary"
               title="Last saved when admin logged in"
