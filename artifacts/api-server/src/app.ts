@@ -39,11 +39,18 @@ const allowedOrigins = new Set<string>([
   "http://localhost",
   "http://localhost:80",
   "http://localhost:24488",
+  // Replit preview domains (set automatically in Replit environment)
   ...(process.env.REPLIT_DOMAINS ?? "")
     .split(",")
     .map((d) => d.trim())
     .filter(Boolean)
     .flatMap((d) => [`https://${d}`, `http://${d}`]),
+  // Extra allowed origins — set CORS_ORIGIN on Render/Vercel as a comma-separated
+  // list of frontend URLs, e.g. https://greenpass.vercel.app
+  ...(process.env.CORS_ORIGIN ?? "")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean),
 ]);
 
 app.use(
