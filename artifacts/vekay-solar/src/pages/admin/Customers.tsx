@@ -14,6 +14,7 @@ import {
 import { Users, Phone, Mail, Search, ChevronRight, Clock, Trash2, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { API_BASE } from "@/lib/api-base";
 
 interface CustomerRow {
   phone: string;
@@ -37,7 +38,7 @@ export default function Customers() {
 
   const fetchCustomers = () => {
     setIsLoading(true);
-    fetch("/api/customers", { credentials: "include" })
+    fetch(`${API_BASE}/api/customers`, { credentials: "include" })
       .then((r) => r.json())
       .then((data) => { setCustomers(data); setIsLoading(false); })
       .catch(() => setIsLoading(false));
@@ -56,7 +57,7 @@ export default function Customers() {
     if (!deleteTarget) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/customers/${encodeURIComponent(deleteTarget.phone)}`, {
+      const res = await fetch(`${API_BASE}/api/customers/${encodeURIComponent(deleteTarget.phone)}`, {
         method: "DELETE",
         credentials: "include",
       });

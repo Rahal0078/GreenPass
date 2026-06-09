@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, Loader2, AlertCircle, Clock, MapPin, User, FileText, CheckCircle2, Mail, Phone, Car, Flag } from "lucide-react";
 import { format } from "date-fns";
+import { API_BASE } from "@/lib/api-base";
 
 type Complaint = {
   id: number;
@@ -205,7 +206,7 @@ export default function TrackTicket() {
     }
     setLookupLoading(true);
     setLookupError(null);
-    fetch(`/api/complaints/lookup?q=${encodeURIComponent(activeTicket)}`)
+    fetch(`${API_BASE}/api/complaints/lookup?q=${encodeURIComponent(activeTicket)}`)
       .then((r) => {
         if (!r.ok) throw new Error("No results found");
         return r.json();

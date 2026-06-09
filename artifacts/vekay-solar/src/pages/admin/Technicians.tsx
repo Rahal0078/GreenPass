@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Loader2, Trash2, X } from "lucide-react";
 
-const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 
 async function apiGet<T>(path: string): Promise<T> {
   const r = await fetch(`${BASE}${path}`, { credentials: "include" });

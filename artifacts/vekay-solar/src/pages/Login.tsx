@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, LogIn } from "lucide-react";
 import { useState } from "react";
+import { API_BASE } from "@/lib/api-base";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -40,7 +41,7 @@ export default function Login() {
   const onSubmit = async (data: LoginFormValues) => {
     setIsPending(true);
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

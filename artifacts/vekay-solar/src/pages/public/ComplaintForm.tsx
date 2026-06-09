@@ -23,6 +23,7 @@ import {
   CalendarDays, AlertCircle,
 } from "lucide-react";
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { API_BASE } from "@/lib/api-base";
 
 const complaintSchema = z.object({
   customerName:       z.string().min(2, "Name is required"),
@@ -169,7 +170,7 @@ export default function ComplaintForm() {
   };
 
   const fallbackToNearestPlace = async (latitude: number, longitude: number) => {
-    const res = await fetch("/api/places/search?q=");
+    const res = await fetch(`${API_BASE}/api/places/search?q=`);
     const allPlaces: any[] = await res.json();
     let nearest = allPlaces[0];
     let minDist  = Infinity;

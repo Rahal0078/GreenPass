@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Phone, Mail, MapPin, Clock, CheckCircle2, AlertCircle, ShieldCheck, Navigation, Trash2, Loader2, Pencil, Check, X } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { API_BASE } from "@/lib/api-base";
 
 interface CustomerComplaint {
   id: number;
@@ -72,7 +73,7 @@ export default function CustomerDetail() {
 
   const fetchCustomer = () => {
     if (!phone) return;
-    fetch(`/api/customers/${encodeURIComponent(phone)}`, { credentials: "include" })
+    fetch(`${API_BASE}/api/customers/${encodeURIComponent(phone)}`, { credentials: "include" })
       .then((r) => r.json())
       .then((data) => { setCustomer(data); setIsLoading(false); })
       .catch(() => setIsLoading(false));
@@ -121,7 +122,7 @@ export default function CustomerDetail() {
     }
     setIsSavingContact(true);
     try {
-      const res = await fetch(`/api/customers/${encodeURIComponent(customer.phone)}`, {
+      const res = await fetch(`${API_BASE}/api/customers/${encodeURIComponent(customer.phone)}`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -146,7 +147,7 @@ export default function CustomerDetail() {
     if (!customer) return;
     setIsDeletingCustomer(true);
     try {
-      const res = await fetch(`/api/customers/${encodeURIComponent(customer.phone)}`, {
+      const res = await fetch(`${API_BASE}/api/customers/${encodeURIComponent(customer.phone)}`, {
         method: "DELETE",
         credentials: "include",
       });

@@ -215,7 +215,7 @@ function kwBadgeClass(kw: string): string {
 }
 
 // ── API calls ─────────────────────────────────────────────────────────────────
-const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 
 const JSON_HEADERS = { "Content-Type": "application/json" } as const;
 

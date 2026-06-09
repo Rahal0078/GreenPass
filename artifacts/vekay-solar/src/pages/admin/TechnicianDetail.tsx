@@ -18,7 +18,7 @@ import {
 import { ArrowLeft, User, Phone, MapPin, KeyRound, Loader2, Eye, EyeOff, Trash2, Pencil, Check, X, Briefcase, Mail } from "lucide-react";
 import { format } from "date-fns";
 
-const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 
 const ROLE_OPTIONS = [
   { value: "technician", label: "Technician" },

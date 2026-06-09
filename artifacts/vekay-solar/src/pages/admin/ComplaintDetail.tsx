@@ -21,7 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Phone, Mail, MapPin, Loader2, Save, ShieldCheck, AlertCircle, Navigation, UserRound, Clock, User, Car, Flag, CheckCircle2, CalendarDays, Users, PauseCircle, RefreshCw, History } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 
-const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 
 interface CustomerHistory {
   phone: string;
