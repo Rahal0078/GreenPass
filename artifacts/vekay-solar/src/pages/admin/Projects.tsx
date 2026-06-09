@@ -613,11 +613,9 @@ export default function Projects() {
       if (dateFrom && completionDate < dateFrom) return false;
       if (dateTo && completionDate > dateTo) return false;
     } else if (stageFilter !== "all") {
-      // Stage only — existing behaviour: projects whose ACTIVE stage matches
+      // Stage only — show projects where that specific stage is completed
       const idx = parseInt(stageFilter);
-      const activeIdx = p.stages.findIndex(s => !isStageCompleted(s));
-      const current = activeIdx === -1 ? 12 : activeIdx;
-      if (current !== idx) return false;
+      if (!isStageCompleted(p.stages[idx])) return false;
     } else if (hasDateFilter) {
       // Date only — any stage has a completion date in the range
       const hasMatch = (p.stageLog ?? []).some(log => {
